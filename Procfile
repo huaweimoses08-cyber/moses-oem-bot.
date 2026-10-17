@@ -1,1 +1,1 @@
-Type web colon python app dot py
+web: python app.py
