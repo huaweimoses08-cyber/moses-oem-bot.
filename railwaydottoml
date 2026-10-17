@@ -1,0 +1,5 @@
+open bracket build close bracket
+builder equals nixpacks
+open bracket deploy close bracket
+startCommand equals python app dot py
+healthcheckPath equals slash
