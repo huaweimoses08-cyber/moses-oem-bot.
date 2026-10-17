@@ -1,142 +1,99 @@
-Here's app dot py, fresh. 
-
 import os, requests
 from flask import Flask, request
 
-app equals Flask underscore underscore name underscore underscore.
-
-VERIFY underscore TOKEN equals os dot environ dot get, open quote VERIFY underscore TOKEN close quote, comma, open quote moses underscore oem underscore parts underscore 2026 close quote.
-
-PAGE underscore ACCESS underscore TOKEN equals os dot environ dot get, open quote PAGE underscore ACCESS underscore TOKEN close quote, comma, empty quotes.
-
-WHATSAPP underscore TOKEN equals os dot environ dot get, open quote WHATSAPP underscore TOKEN close quote, comma, empty quotes.
-
-WHATSAPP underscore PHONE underscore ID equals os dot environ dot get, open quote WHATSAPP underscore PHONE underscore ID close quote, comma, empty quotes.
-
-OPENAI underscore KEY equals os dot environ dot get, open quote OPENAI underscore KEY close quote, comma, empty quotes.
-
-CATALOG equals open brace.
-
-open quote headlights close quote colon open bracket open quote VW Golf 6 close quote comma open quote BMW F-series close quote comma open quote Audi A3 close quote comma open quote Audi RS6 C8 close quote comma open quote Toyota RAV4 close quote comma open quote Mercedes CLE C236 close quote close bracket comma
-
-open quote led modules close quote colon open bracket open quote BMW G20 fog lights close quote comma open quote Audi Q5 close quote comma open quote VW Tiguan close quote comma open quote Mercedes C-Class close quote close bracket comma
-
-open quote bumpers close quote colon open bracket open quote Porsche Boxster close quote comma open quote BMW G20 close quote comma open quote Audi A4 close quote comma open quote Toyota Corolla close quote comma open quote Mercedes A-Class close quote comma open quote Mercedes E-Class close quote close bracket comma
-
-open quote parts close quote colon open bracket open quote modules close quote comma open quote headlights close quote comma open quote bumpers close quote comma open quote fog lights close quote comma open quote taillights close quote close bracket
-
-close brace.
-
-def ai underscore reply open paren text close paren colon
-
-t equals text dot lower open paren close paren.
-
-for k comma v in CATALOG dot items open paren close paren colon
-
-if k in t colon
-
-return open quote We stock close quote plus k plus open quote colon close quote plus comma dot join open paren v close paren plus open quote dot WhatsApp plus 27 63 451 8666 for prices and stock dot close quote.
-
-if open quote price close quote in t or open quote cost close quote in t colon
-
-return open quote Prices depend on the exact part and model dot Send the part name and car details on WhatsApp plus 27 63 451 8666 dot close quote.
-
-return open quote Hi comma Moses OEM Parts here dot We sell headlights comma LED modules comma bumpers and OEM parts for VW comma BMW comma Audi comma Toyota comma Mercedes and more dot What do you need question mark close quote.
-
-def ai underscore reply underscore smart open paren text close paren colon
-
-if not OPENAI underscore KEY colon
-
-return ai underscore reply open paren text close paren.
-
-try colon
-
-r equals requests dot post open paren open quote https colon slash slash api dot openai dot com slash v1 slash chat slash completions close quote comma
-
-headers equals open brace open quote Authorization close quote colon open quote Bearer close quote plus OPENAI underscore KEY comma open quote Content-Type close quote colon open quote application slash json close quote close brace comma
-
-json equals open brace open quote model close quote colon open quote gpt-4o-mini close quote comma open quote max tokens close quote colon 150 comma
-
-open quote messages close quote colon open bracket open brace open quote role close quote colon open quote system close quote comma open quote content close quote colon open quote You are Moses OEM Parts comma a South African car parts seller dot WhatsApp plus 27 63 451 8666 comma email mukasamosesimports at gmail dot com dot Sell headlights comma LED modules comma bumpers comma OEM parts for VW comma BMW comma Audi comma Toyota comma Mercedes comma Porsche comma Nissan comma Jaguar comma Land Rover comma McLaren comma Lamborghini comma GTR dot Be short comma always end with the WhatsApp number dot close quote close brace comma
-
-open brace open quote role close quote colon open quote user close quote comma open quote content close quote colon text close brace close bracket close brace comma timeout equals 20 close paren.
-
-return r dot json open paren close paren open bracket open quote choices close quote close bracket open bracket zero close bracket open bracket open quote message close quote close bracket open bracket open quote content close quote close bracket.
-
-except Exception colon
-
-return ai underscore reply open paren text close paren.
-
-def send underscore messenger open paren uid comma text close paren colon
-
-if not PAGE underscore ACCESS underscore TOKEN colon
-
-return
-
-requests dot post open paren open quote https colon slash slash graph dot facebook dot com slash v19 dot 0 slash me slash messages question mark access token equals close quote plus PAGE underscore ACCESS underscore TOKEN comma
-
-json equals open brace open quote recipient close quote colon open brace open quote id close quote colon uid close brace comma open quote message close quote colon open brace open quote text close quote colon text close brace close brace comma timeout equals 15 close paren.
-
-def send underscore whatsapp open paren to comma text close paren colon
-
-if not open paren WHATSAPP underscore TOKEN and WHATSAPP underscore PHONE underscore ID close paren colon
-
-return
-
-requests dot post open paren open quote https colon slash slash graph dot facebook dot com slash v19 dot 0 slash close quote plus WHATSAPP underscore PHONE underscore ID plus open quote slash messages close quote comma
-
-headers equals open brace open quote Authorization close quote colon open quote Bearer close quote plus WHATSAPP underscore TOKEN close brace comma
-
-json equals open brace open quote messaging product close quote colon open quote whatsapp close quote comma open quote to close quote colon to comma open quote type close quote colon open quote text close quote comma open quote text close quote colon open brace open quote body close quote colon text close brace close brace comma timeout equals 15 close paren.
-
-at symbol app dot route open paren open quote slash webhook close quote comma methods equals open bracket open quote GET close quote comma open quote POST close quote close bracket close paren
-
-def webhook open paren close paren colon
-
-if request dot method equals equals open quote GET close quote colon
-
-if request dot args dot get open paren open quote hub dot mode close quote close paren equals equals open quote subscribe close quote and request dot args dot get open paren open quote hub dot verify token close quote close paren equals equals VERIFY underscore TOKEN colon
-
-return request dot args dot get open paren open quote hub dot challenge close quote close paren comma 200
-
-return open quote bad close quote comma 403
-
-data equals request dot get json open paren force equals True comma silent equals True close paren or open brace close brace.
-
-for e in data dot get open paren open quote entry close quote comma open bracket close bracket close paren colon
-
-for m in e dot get open paren open quote messaging close quote comma open bracket close bracket close paren colon
-
-sender equals m dot get open paren open quote sender close quote comma open brace close brace close paren dot get open paren open quote id close quote close paren
-
-msg equals m dot get open paren open quote message close quote comma open brace close brace close paren
-
-if sender and open quote text close quote in msg and not msg dot get open paren open quote is echo close quote close paren colon
-
-send underscore messenger open paren sender comma ai underscore reply underscore smart open paren msg open bracket open quote text close quote close bracket close paren close paren
-
-for c in e dot get open paren open quote changes close quote comma open bracket close bracket close paren colon
-
-v equals c dot get open paren open quote value close quote comma open brace close brace close paren
-
-if c dot get open paren open quote field close quote close paren equals equals open quote messages close quote colon
-
-for msg in v dot get open paren open quote messages close quote comma open bracket close bracket close paren colon
-
-if msg dot get open paren open quote type close quote close paren equals equals open quote text close quote colon
-
-send underscore whatsapp open paren msg open bracket open quote from close quote close bracket comma ai underscore reply underscore smart open paren msg open bracket open quote text close quote close bracket open bracket open quote body close quote close bracket close paren close paren
-
-return open quote ok close quote comma 200
-
-at symbol app dot route open paren open quote slash close quote close paren
-
-def home open paren close paren colon
-
-return open quote Moses OEM Parts bot is live dot close quote
-
-if underscore underscore name underscore underscore equals equals open quote main close quote colon
-
-app dot run open paren host equals open quote 0 dot 0 dot 0 dot 0 close quote comma port equals int open paren os dot environ dot get open paren open quote PORT close quote comma 5000 close paren close paren close paren.
-
-That's the whole file. Once it's in, hit Commit changes, then repeat for the other three files — requirements dot txt is just flask equals equals 3 dot 0 dot 3 and requests equals equals 2 dot 32 dot 3 on two lines, Procfile is web colon python app dot py, and railway dot toml has the build and deploy blocks. After all four are committed, switch back to Railway and Connect Repo should finally list moses-oem-bot.add bot files in that blinking field and hit Commit changes.
+app = Flask(__name__)
+
+VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN", "moses_oem_parts_2026")
+PAGE_ACCESS_TOKEN = os.environ.get("PAGE_ACCESS_TOKEN", "")
+WHATSAPP_TOKEN = os.environ.get("WHATSAPP_TOKEN", "")
+WHATSAPP_PHONE_ID = os.environ.get("WHATSAPP_PHONE_ID", "")
+OPENAI_KEY = os.environ.get("OPENAI_KEY", "")
+
+CATALOG = {
+    "headlights": ["VW Golf 6", "BMW F-series", "Audi A3", "Audi RS6 C8", "Toyota RAV4", "Mercedes CLE C236"],
+    "led modules": ["BMW G20 fog lights", "Audi Q5", "VW Tiguan", "Mercedes C-Class"],
+    "bumpers": ["Porsche Boxster", "BMW G20", "Audi A4", "Toyota Corolla", "Mercedes A-Class", "Mercedes E-Class"],
+    "parts": ["modules", "headlights", "bumpers", "fog lights", "taillights"]
+}
+
+def ai_reply(text):
+    t = text.lower()
+    for k, v in CATALOG.items():
+        if k in t:
+            return f"We stock {k}: {', '.join(v)}. WhatsApp +27 63 451 8666 for prices and stock."
+    if "price" in t or "cost" in t:
+        return "Prices depend on the exact part and model. Send the part name and car details on WhatsApp +27 63 451 8666."
+    return "Hi, Moses OEM Parts here. We sell headlights, LED modules, bumpers and OEM parts for VW, BMW, Audi, Toyota, Mercedes and more. What do you need?"
+
+def ai_reply_smart(text):
+    if not OPENAI_KEY:
+        return ai_reply(text)
+    try:
+        r = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={"Authorization": f"Bearer {OPENAI_KEY}", "Content-Type": "application/json"},
+            json={
+                "model": "gpt-4o-mini",
+                "max_tokens": 150,
+                "messages": [
+                    {"role": "system", "content": "You are Moses OEM Parts, a South African car parts seller. WhatsApp +27 63 451 8666, email mukasamosesimports@gmail.com. Sell headlights, LED modules, bumpers, OEM parts for VW, BMW, Audi, Toyota, Mercedes, Porsche, Nissan, Jaguar, Land Rover, McLaren, Lamborghini, GTR. Be short, always end with the WhatsApp number."},
+                    {"role": "user", "content": text}
+                ]
+            },
+            timeout=20
+        )
+        return r.json()["choices"][0]["message"]["content"]
+    except Exception:
+        return ai_reply(text)
+
+def send_messenger(uid, text):
+    if not PAGE_ACCESS_TOKEN:
+        return
+    requests.post(
+        f"https://graph.facebook.com/v19.0/me/messages?access_token={PAGE_ACCESS_TOKEN}",
+        json={"recipient": {"id": uid}, "message": {"text": text}},
+        timeout=15
+    )
+
+def send_whatsapp(to, text):
+    if not (WHATSAPP_TOKEN and WHATSAPP_PHONE_ID):
+        return
+    requests.post(
+        f"https://graph.facebook.com/v19.0/{WHATSAPP_PHONE_ID}/messages",
+        headers={"Authorization": f"Bearer {WHATSAPP_TOKEN}"},
+        json={
+            "messaging_product": "whatsapp",
+            "to": to,
+            "type": "text",
+            "text": {"body": text}
+        },
+        timeout=15
+    )
+
+@app.route("/webhook", methods=["GET", "POST"])
+def webhook():
+    if request.method == "GET":
+        if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.verify_token") == VERIFY_TOKEN:
+            return request.args.get("hub.challenge"), 200
+        return "bad", 403
+    data = request.get_json(force=True, silent=True) or {}
+    for e in data.get("entry", []):
+        for m in e.get("messaging", []):
+            sender = m.get("sender", {}).get("id")
+            msg = m.get("message", {})
+            if sender and "text" in msg and not msg.get("is_echo"):
+                send_messenger(sender, ai_reply_smart(msg["text"]))
+        for c in e.get("changes", []):
+            v = c.get("value", {})
+            if c.get("field") == "messages":
+                for msg in v.get("messages", []):
+                    if msg.get("type") == "text":
+                        send_whatsapp(msg["from"], ai_reply_smart(msg["text"]["body"]))
+    return "ok", 200
+
+@app.route("/")
+def home():
+    return "Moses OEM Parts bot is live."
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
