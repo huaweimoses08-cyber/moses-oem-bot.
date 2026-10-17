@@ -1,2 +1,2 @@
-flask equals equals 3 dot 0 dot 3
-requests equals equals 2 dot 32 dot 3
+flask==3.0.3
+requests==2.32.3
