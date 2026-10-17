@@ -1,1 +1,1 @@
-web colon python app dot py
+Type web colon python app dot py
